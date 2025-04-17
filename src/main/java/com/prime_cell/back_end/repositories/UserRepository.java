@@ -1,7 +1,12 @@
 package com.prime_cell.back_end.repositories;
 
-import org.apache.catalina.User;
+import com.prime_cell.back_end.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, String> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+    User findByName(String name);
+    User findByPassword(String password);
 }
