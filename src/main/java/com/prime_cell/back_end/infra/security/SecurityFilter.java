@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {//filtro do spring para ver se o usuario esta altenticado, ele executa uma vez a cada requisicao
+public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
     @Autowired
@@ -27,20 +27,31 @@ public class SecurityFilter extends OncePerRequestFilter {//filtro do spring par
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
-        var login = tokenService.validateToken(token);
+        System.out.println("Token recebido: " + token);
 
-        if(login != null){
-            User user = userRepository.findByEmail(login).orElseThrow(() -> new RuntimeException("User not found"));
-            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (token != null) {
+            var login = tokenService.validateToken(token);
+            System.out.println("Login após validação: " + login);
+
+            if (login != null) {
+                User user = userRepository.findByEmail(login)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+                System.out.println("Usuário encontrado: " + user.getEmail());
+
+                var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 
-    private String recoverToken(HttpServletRequest request){//pega o request do usuario
+    private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
-        return authHeader.replace("Bearer ", "");
+        System.out.println("Header de autorização: " + authHeader);
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+        return authHeader.substring(7); // Use substring em vez de replace
     }
 }
