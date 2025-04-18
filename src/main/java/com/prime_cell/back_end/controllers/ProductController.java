@@ -20,16 +20,18 @@ public class ProductController {
         return ResponseEntity.ok(newProduct);
     }
 
-    /*@DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@RequestParam String id) {
-        Product product = productService.deleteProduct();
-    }*/
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) { // @PathVariable em vez de @RequestParam
+        productService.deleteProduct(id);
+        return ResponseEntity.ok().build();
+    }
 
-
-    @PostMapping("/{id}")
-    public ResponseEntity<Product> editProduct(@RequestBody Product product) {
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editProduct(@PathVariable Long id, @RequestBody Product product) {
+        // Garante que o ID do produto é o mesmo da URL
+        product.setId(id);
         productService.updateProduct(product);
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @GetMapping

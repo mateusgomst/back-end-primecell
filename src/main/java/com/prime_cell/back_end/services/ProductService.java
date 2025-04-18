@@ -28,12 +28,13 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public void updateProduct(Product product){
-        if(!productRepository.existsById(product.getId())){
-            throw new InsufficientDataException("Product with id " + product.getId() + " not found");
-        }
-        this.deleteProduct(product.getId());
-        productRepository.save(product);
+    public Product updateProduct(Product product) {
+        // Verifica se o produto existe
+        Product existingProduct = productRepository.findById(product.getId())
+                .orElseThrow(() -> new InsufficientDataException("Product with id " + product.getId() + " not found"));
+
+        existingProduct.setName(product.getName());
+        return productRepository.save(existingProduct);
     }
 
     public List<Product> getAllProducts() {
