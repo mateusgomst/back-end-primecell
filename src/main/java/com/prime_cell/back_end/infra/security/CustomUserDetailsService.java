@@ -1,5 +1,6 @@
 package com.prime_cell.back_end.infra.security;
 
+import com.prime_cell.back_end.exceptions.AdminNotFoundException;
 import com.prime_cell.back_end.models.User;
 import com.prime_cell.back_end.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository repository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.repository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetails loadUserByUsername(String username) throws AdminNotFoundException {
+        User user = this.repository.findByEmail(username)
+                .orElseThrow(() -> new AdminNotFoundException("Admin not found"));
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
     }
 }

@@ -3,6 +3,8 @@ package com.prime_cell.back_end.controllers;
 import com.prime_cell.back_end.dto.LoginRequestDTO;
 import com.prime_cell.back_end.dto.RegisterRequestDTO;
 import com.prime_cell.back_end.dto.ResponseDTO;
+import com.prime_cell.back_end.exceptions.AdminAlreadyExistsException;
+import com.prime_cell.back_end.exceptions.AdminNotFoundException;
 import com.prime_cell.back_end.infra.security.TokenService;
 import com.prime_cell.back_end.models.User;
 import com.prime_cell.back_end.repositories.UserRepository;
@@ -28,7 +30,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO bory) {
-        User user = this.userRepository.findByEmail(bory.email()).orElseThrow(()-> new RuntimeException("User not found"));
+        User user = this.userRepository.findByEmail(bory.email())
+                .orElseThrow(() -> new AdminNotFoundException("Admin not found"));
         if (passwordEncoder.matches(bory.password(), user.getPassword())) {
             String token = tokenService.generateToken(user);
             return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
@@ -39,21 +42,18 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequestDTO bory) {
-
-        Optional<User> user= this.userRepository.findByEmail(bory.email());
-
-        if(user.isEmpty()){
-            User newUser = new User();
-            newUser.setPassword(passwordEncoder.encode(bory.password()));
-            newUser.setEmail(bory.email());
-            newUser.setName(bory.name());
-            this.userRepository.save(newUser);
-
-            String token = tokenService.generateToken(newUser);
-
-            return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
-
+        if (this.userRepository.findByEmail(bory.email()).isPresent()) {
+            throw new AdminAlreadyExistsException("Admin with this email already exists");
         }
-        return ResponseEntity.badRequest().build();
+
+        User newUser = new User();
+        newUser.setPassword(passwordEncoder.encode(bory.password()));
+        newUser.setEmail(bory.email());
+        newUser.setName(bory.name());
+        this.userRepository.save(newUser);
+
+        String token = tokenService.generateToken(newUser);
+
+        return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
     }
 }

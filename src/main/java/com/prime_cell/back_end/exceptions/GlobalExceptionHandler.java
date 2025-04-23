@@ -36,6 +36,20 @@ public class GlobalExceptionHandler {
                 .body("Erro no processamento: " + ex.getMessage());
     }
 
+    @ExceptionHandler(AdminNotFoundException.class)
+    public ResponseEntity<String> handleAdminNotFoundException(AdminNotFoundException ex) {
+        logger.error("Admin não encontrado: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("Admin não encontrado: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(AdminAlreadyExistsException.class)
+    public ResponseEntity<String> handleAdminAlreadyExistsException(AdminAlreadyExistsException ex) {
+        logger.error("Admin já existe: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         logger.error("Erro inesperado: {}", ex.getMessage());
@@ -43,4 +57,6 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Erro interno do servidor");
     }
+
+
 }
