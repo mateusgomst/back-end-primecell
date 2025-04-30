@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,5 +54,16 @@ public class ProductService {
             throw new InsufficientDataException("Product with id " + id + " not found");
         }
         return productRepository.findById(id);
+    }
+
+    public List<Product> getNewProducts() {
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+
+        List<Product> newProducts = productRepository.findAllByCreatedAtAfter(thirtyDaysAgo);
+
+        if (newProducts.isEmpty()) {
+            throw new InsufficientDataException("No new products found");
+        }
+        return newProducts;
     }
 }
