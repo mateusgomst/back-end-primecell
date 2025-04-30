@@ -34,7 +34,7 @@ public class AuthController {
                 .orElseThrow(() -> new AdminNotFoundException("Admin not found"));
         if (passwordEncoder.matches(bory.password(), user.getPassword())) {
             String token = tokenService.generateToken(user);
-            return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
+            return ResponseEntity.ok(new ResponseDTO(token));
         } else {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
@@ -54,6 +54,6 @@ public class AuthController {
 
         String token = tokenService.generateToken(newUser);
 
-        return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
+        return ResponseEntity.ok(new ResponseDTO(token));
     }
 }
