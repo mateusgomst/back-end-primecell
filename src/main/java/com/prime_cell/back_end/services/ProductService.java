@@ -2,6 +2,7 @@ package com.prime_cell.back_end.services;
 
 import com.prime_cell.back_end.exceptions.InsufficientDataException;
 import com.prime_cell.back_end.models.Product;
+import com.prime_cell.back_end.models.ProductType;
 import com.prime_cell.back_end.repositories.ProductRepository;
 import com.prime_cell.back_end.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -65,5 +66,12 @@ public class ProductService {
             throw new InsufficientDataException("No new products found");
         }
         return newProducts;
+    }
+
+    public List<Product> getProductsByCategory(ProductType type) {
+        if(productRepository.findByType(type) == null) {
+            throw new InsufficientDataException("No products found for category " + type);
+        }
+        return productRepository.findByType(type);
     }
 }
