@@ -1,5 +1,6 @@
 package com.prime_cell.back_end.controllers;
 
+import com.prime_cell.back_end.exceptions.InvalidFormatEnum;
 import com.prime_cell.back_end.models.Product;
 import com.prime_cell.back_end.models.ProductType;
 import com.prime_cell.back_end.services.ProductService;
@@ -48,7 +49,7 @@ public class ProductController {
     }
 
     @GetMapping("/findByCategory")
-    public ResponseEntity<List<Product>> listAllProductsByCategory(@RequestParam("ProductType") ProductType type) {
+    public ResponseEntity<List<Product>> listAllProductsByCategory(@RequestParam("ProductType") String type) {
         List<Product> products = productService.getProductsByCategory(type);
         return ResponseEntity.ok(products);
     }
