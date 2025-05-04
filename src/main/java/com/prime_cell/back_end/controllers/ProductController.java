@@ -1,6 +1,8 @@
 package com.prime_cell.back_end.controllers;
 
+import com.prime_cell.back_end.exceptions.InvalidFormatEnum;
 import com.prime_cell.back_end.models.Product;
+import com.prime_cell.back_end.models.ProductType;
 import com.prime_cell.back_end.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,12 @@ public class ProductController {
     @GetMapping("/new-products")
     public ResponseEntity<List<Product>> listNewProducts(){
         List<Product> products= productService.getNewProducts();
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/findByCategory")
+    public ResponseEntity<List<Product>> listAllProductsByCategory(@RequestParam("ProductType") String type) {
+        List<Product> products = productService.getProductsByCategory(type);
         return ResponseEntity.ok(products);
     }
 }

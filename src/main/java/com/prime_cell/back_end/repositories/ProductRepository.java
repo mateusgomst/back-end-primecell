@@ -1,6 +1,7 @@
 package com.prime_cell.back_end.repositories;
 
 import com.prime_cell.back_end.models.Product;
+import com.prime_cell.back_end.models.ProductType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,5 +14,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Boolean existsByName(String name);
     Product findById(long id);
 
+    List<Product> findByType(ProductType type);
     List<Product> findAllByCreatedAtAfter(LocalDateTime createdAtAfter);
 }

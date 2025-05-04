@@ -1,5 +1,6 @@
 package com.prime_cell.back_end.exceptions;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -47,7 +48,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AdminAlreadyExistsException.class)
     public ResponseEntity<String> handleAdminAlreadyExistsException(AdminAlreadyExistsException ex) {
         logger.error("Admin já existe: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
@@ -58,5 +61,11 @@ public class GlobalExceptionHandler {
                 .body("Erro interno do servidor");
     }
 
-
+    @ExceptionHandler(InvalidFormatEnum.class)
+    public ResponseEntity<String> handleInvalidFormatEnum(InvalidFormatEnum ex) {
+        logger.error("Erro de formato inválido: {}", ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Erro: " + ex.getMessage());
+    }
 }

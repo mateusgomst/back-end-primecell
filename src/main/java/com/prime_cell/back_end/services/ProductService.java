@@ -1,7 +1,9 @@
 package com.prime_cell.back_end.services;
 
 import com.prime_cell.back_end.exceptions.InsufficientDataException;
+import com.prime_cell.back_end.exceptions.InvalidFormatEnum;
 import com.prime_cell.back_end.models.Product;
+import com.prime_cell.back_end.models.ProductType;
 import com.prime_cell.back_end.repositories.ProductRepository;
 import com.prime_cell.back_end.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.net.Proxy;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -65,5 +68,13 @@ public class ProductService {
             throw new InsufficientDataException("No new products found");
         }
         return newProducts;
+    }
+
+    public List<Product> getProductsByCategory(String type) {
+        List<Product> products = productRepository.findByType(ProductType.fromString(type));
+        if (products == null || products.isEmpty()) {
+            throw new InsufficientDataException("No products found for category " + type);
+        }
+        return products;
     }
 }
