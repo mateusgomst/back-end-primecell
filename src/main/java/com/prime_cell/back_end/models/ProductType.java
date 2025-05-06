@@ -1,6 +1,6 @@
 package com.prime_cell.back_end.models;
 
-import com.prime_cell.back_end.exceptions.InvalidFormatEnum;
+import com.prime_cell.back_end.exceptions.InvalidFormatEnumException;
 
 import java.util.Arrays;
 
@@ -18,6 +18,6 @@ public enum ProductType {
         return Arrays.stream(ProductType.values())
                 .filter(type -> type.name().equalsIgnoreCase(value))
                 .findFirst()
-                .orElseThrow(() -> new InvalidFormatEnum("Valor inválido para ProductType. Valores permitidos: ELETRONICOS, FONES, CARREGADORES, CASE, BATERIAS, ACESSORIOS, OUTROS"));
+                .orElseThrow(() -> new InvalidFormatEnumException("Valor inválido para ProductType. Valores permitidos: ELETRONICOS, FONES, CARREGADORES, CASE, BATERIAS, ACESSORIOS, OUTROS"));
     }
 }

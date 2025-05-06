@@ -9,24 +9,15 @@ services:
       - db
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_USERNAME=${DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - API_SECRET=${API_SECRET}
     volumes:
       - ./src:/app/src  # Monta o código-fonte como volume
 
   db:
     image: postgres:13
     ports:
-      - "5434:5432"  # Alterado para 5434
+      - "5432:5432"  # Alterado para 5434
     env_file:
       - .env
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

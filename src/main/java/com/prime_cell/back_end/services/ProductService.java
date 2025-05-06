@@ -1,29 +1,37 @@
 package com.prime_cell.back_end.services;
 
 import com.prime_cell.back_end.exceptions.InsufficientDataException;
-import com.prime_cell.back_end.exceptions.InvalidFormatEnum;
 import com.prime_cell.back_end.models.Product;
 import com.prime_cell.back_end.models.ProductType;
 import com.prime_cell.back_end.repositories.ProductRepository;
-import com.prime_cell.back_end.repositories.UserRepository;
+import com.prime_cell.back_end.util.UploadUtil;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.Proxy;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public Product addProduct(Product product){
+    public Product addProduct(Product product, MultipartFile image) {
+        if (image != null && !image.isEmpty()) {
+            try {
+                // Salva a imagem e obtém o nome do arquivo
+                String imageName = UploadUtil.uploadImage(image);
+                product.setImage(imageName);
+            } catch (RuntimeException e) {
+                throw new InsufficientDataException("Erro ao salvar imagem do produto: " + e.getMessage());
+            }
+        }
         return productRepository.save(product);
     }
+    /*public Product addProduct(Product product) {
+        return productRepository.save(product);
+    }*/
 
     public void deleteProduct(long id){
         if(!productRepository.existsById(id)){
