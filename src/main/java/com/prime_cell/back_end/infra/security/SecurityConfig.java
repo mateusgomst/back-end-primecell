@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // Permitir acesso público a recursos estáticos
                         .requestMatchers(HttpMethod.GET, "/static/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll() // Mantido para o novo diretório de imagens
+                        .requestMatchers(HttpMethod.GET, "/uploads/images/**").permitAll() // Adicionado para garantir (embora o mapeamento já deve ser feito)
                         .requestMatchers(HttpMethod.GET, "/static/images/**").permitAll()
 
                         // Rotas de API existentes

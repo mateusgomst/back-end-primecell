@@ -9,7 +9,8 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 public class UploadUtil {
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    // Altere esta constante para um caminho absoluto fora de src/main/resources
+    private static final String UPLOAD_DIR = "uploads/images/";
 
     public static String uploadImage(MultipartFile imagem) {
         try {
