@@ -44,6 +44,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Desativa CSRF (necessário para APIs REST)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // Permitir acesso público a recursos estáticos
+                        .requestMatchers(HttpMethod.GET, "/static/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/images/**").permitAll() // Mantido para o novo diretório de imagens
+                        .requestMatchers(HttpMethod.GET, "/uploads/images/**").permitAll() // Adicionado para garantir (embora o mapeamento já deve ser feito)
+                        .requestMatchers(HttpMethod.GET, "/static/images/**").permitAll()
+
+                        // Rotas de API existentes
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products").permitAll()
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()

@@ -1,6 +1,5 @@
 package com.prime_cell.back_end.exceptions;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -61,8 +60,8 @@ public class GlobalExceptionHandler {
                 .body("Erro interno do servidor");
     }
 
-    @ExceptionHandler(InvalidFormatEnum.class)
-    public ResponseEntity<String> handleInvalidFormatEnum(InvalidFormatEnum ex) {
+    @ExceptionHandler(InvalidFormatEnumException.class)
+    public ResponseEntity<String> handleInvalidFormatEnum(InvalidFormatEnumException ex) {
         logger.error("Erro de formato inválido: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

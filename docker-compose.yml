@@ -2,33 +2,35 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "${SERVER_PORT}:8080"
     depends_on:
       - db
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_USERNAME=${DATABASE_USERNAME}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - API_SECRET=${API_SECRET}
     volumes:
-      - ./src:/app/src  # Monta o código-fonte como volume
+      - ./:/app  # Monta todo o diretório do projeto
+      - maven-repo:/root/.m2  # Cache do Maven
+      - ./uploads:/app/uploads  # Volume persistente para imagens
+    environment:
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
+      - SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
 
   db:
     image: postgres:13
     ports:
-      - "5434:5432"  # Alterado para 5434
+      - "5432:5432"
     env_file:
       - .env
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
+  maven-repo:  # Volume para o cache do Maven
